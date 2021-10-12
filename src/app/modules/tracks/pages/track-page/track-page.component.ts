@@ -1,20 +1,36 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { TrackModel } from 'src/app/core/models/tracks.model';
-import * as dataRaw from '../../../../data/tracks.json';
+import { TrackService } from '../../services/track.service';
 @Component({
   selector: 'app-track-page',
   templateUrl: './track-page.component.html',
-  styleUrls: ['./track-page.component.css']
+  styleUrls: ['./track-page.component.css'],
 })
 export class TrackPageComponent implements OnInit {
-  mocTracksList: Array<TrackModel> = [
-
-  ]
-  constructor() { }
+  tracksTrending: Array<TrackModel> = [];
+  tracksRandom: Array<TrackModel> = [];
+  listObservers$: Array<Subscription> = [];
+  constructor(private trackService: TrackService) { }
 
   ngOnInit(): void {
-    const { data }: any = (dataRaw as any).default;
-    this.mocTracksList = data;
+    this.getTracks();
   }
 
+  getTracks(): void {
+    this.trackService.getAllTracks$()
+      .subscribe((response: TrackModel[]) => {
+        this.tracksTrending = response;
+      })
+  }
+
+
+  getRandoms(): void {
+    this.trackService.getAllRandoms$()
+      .subscribe((response: TrackModel[]) => {
+        this.tracksRandom = response;
+      }, err => {
+        console.log('Error de Conexión')
+      })
+  }
 }
