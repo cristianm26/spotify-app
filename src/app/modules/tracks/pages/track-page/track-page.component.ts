@@ -15,6 +15,7 @@ export class TrackPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTracks();
+    this.getRandoms();
   }
 
   getTracks(): void {
